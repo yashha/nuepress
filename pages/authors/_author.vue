@@ -1,24 +1,15 @@
 <template>
-  <div class="author">
-    <div class="articles">
-      <div class="page-title">
-        <h1 v-html="author.name"></h1>
-        <p v-html="author.description"></p>
-      </div>
-      <ArticleList :articles="authorArticles.articles"></ArticleList>
-      <InfiniteLoading v-if="(authorArticles.infiniteLoading)  && (authorArticles.articles.length >= 10)" :on-infinite="moreArticles" ref="infiniteLoading"/>
-    </div>
-    <Sidebar :featuredArticles="featuredArticles"></Sidebar>
+  <div>
+    <h1 v-html="author.name"></h1>
+    <p v-html="author.description"></p>
+    <ArticleList :articles="authorArticles.articles"></ArticleList>
   </div>
 </template>
 
 <script>
 import find from 'lodash/find'
 import axios from 'axios'
-
 import ArticleList from '~/components/ArticleList'
-import InfiniteLoading from '~/components/InfiniteLoading'
-import Sidebar from '~/components/Sidebar'
 
 export default {
   async asyncData ({ store, params }) {
@@ -45,9 +36,7 @@ export default {
   },
 
   components: {
-    ArticleList,
-    InfiniteLoading,
-    Sidebar
+    ArticleList
   },
 
   computed: {
@@ -64,9 +53,6 @@ export default {
     authors () {
       return this.$store.state.authors
     },
-    featuredArticles () {
-      return this.$store.state.featuredArticles
-    },
     meta () {
       return this.$store.state.meta
     }
@@ -79,49 +65,10 @@ export default {
         { description: this.meta.description }
       ]
     }
-  },
-
-  methods: {
-    moreArticles () {
-      this.authorArticles.page++
-
-      axios.get(`${this.$store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&author=${this.author.id}&_embed&page=${this.authorArticles.page}`)
-        .then(response => {
-          this.authorArticles.articles = this.authorArticles.articles.concat(response.data)
-          this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
-        })
-        .catch(() => {
-          // this.authorArticles.infiniteLoading = false
-          this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
-        })
-    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '~assets/css/vars.scss';
 
-.author {
-  display: flex;
-
-  .articles {
-    background-color: #efefef;
-    padding: 0 32px;
-    max-width: 900px;
-    width: 100%;
-
-    @media (max-width: 1000px) {
-      max-width: none;
-    }
-
-    @media (max-width: 700px) {
-      padding: 0 16px;
-    }
-
-    .article-list {
-      margin: 32px 0;
-    }
-  }
-}
 </style>

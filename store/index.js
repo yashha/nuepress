@@ -7,10 +7,6 @@ const store = () => new Vuex.Store({
     articles: [],
     authorArticles: [],
     authors: null,
-    indexInfiniteLoading: {
-      enabled: true,
-      page: 1
-    },
     featuredArticles: [],
     featuredColor: {},
     featuredID: 194,
@@ -32,9 +28,6 @@ const store = () => new Vuex.Store({
     },
     setAuthors (state, data) {
       state.authors = data
-    },
-    setIndexInfiniteLoading (state, data) {
-      state.indexInfiniteLoading = data
     },
     setFeaturedColor (state, data) {
       state.featuredColor = data

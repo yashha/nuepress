@@ -1,7 +1,7 @@
 <template>
   <footer>
     <div v-if="meta">
-      <nuxt-link class="fancy" to="/" exact><span v-html="meta.name"></span></nuxt-link>
+      <nuxt-link to="/" v-html="meta.name" exact></nuxt-link>
       <div v-if="meta.description" v-html="meta.description"></div>
       <div>© {{ year }}</div>
     </div>
@@ -22,26 +22,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~assets/css/vars.scss';
 
-footer {
-  > div {
-    align-items: center;
-    background-color: #fff;
-    color: #aaa;
-    display: flex;
-    flex-direction: column;
-    height: 200px;
-    font-family: 'Roboto', sans-serif;
-    font-size: .7rem;
-    margin: 0 auto;
-    max-width: $containerWidth;
-    padding: 64px 32px;
-    text-align: center;
-  }
-
-  a {
-    color: #aaa;
-  }
-}
 </style>
