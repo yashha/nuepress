@@ -6,6 +6,25 @@ const store = () => new Vuex.Store({
     async nuxtServerInit ({ commit, state }) {
       let meta = await this.$axios.get(state.wordpressAPI)
       commit('setMeta', meta.data)
+    },
+    async fetchArticles ({ commit, state }, options) {
+      const { limit, orderBy, exclude } = options
+      if (!state.articles.length) {
+        let articles = await this.$axios.get(`${state.wordpressAPI}/wp/v2/posts?orderby=${orderBy}&per_page=${limit}&categories_exclude=${exclude}&_embed`)
+        commit('setArticles', articles.data)
+      }
+    },
+    async fetchMoreArticles ({ commit, state }, options) {
+      const { limit, orderBy, exclude, page } = options
+      let articles = await this.$axios.get(`${state.wordpressAPI}/wp/v2/posts?orderby=${orderBy}&per_page=${limit}&categories_exclude=${exclude}&page=${page}&_embed`)
+      commit('setArticles', articles.data)
+    },
+    async fetchFeaturedArticles ({ commit, state }, options) {
+      const { limit, orderBy } = options
+      if (!state.featuredArticles.length) {
+        let articles = await this.$axios.get(`${state.wordpressAPI}/wp/v2/posts?orderby=${orderBy}&per_page=${limit}&categories=${state.featuredID}&_embed`)
+        commit('setFeaturedArticles', articles.data)
+      }
     }
   },
 

@@ -17,15 +17,8 @@ import Sidebar from '~/components/Sidebar'
 
 export default {
   async asyncData ({ app, store, params }) {
-    if (!store.state.articles.length) {
-      let articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories_exclude=${store.state.featuredID}&_embed`)
-      store.commit('setArticles', articles.data)
-    }
-
-    if (!store.state.featuredArticles.length) {
-      let articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories=${store.state.featuredID}&_embed`)
-      store.commit('setFeaturedArticles', articles.data)
-    }
+    await store.dispatch('fetchArticles', { limit: 10, orderBy: 'date', exclude: store.state.featuredID })
+    await store.dispatch('fetchFeaturedArticles', { limit: 10, orderBy: 'date' })
   },
 
   components: {
@@ -57,9 +50,8 @@ export default {
     moreArticles () {
       this.indexInfiniteLoading.page++
 
-      this.$axios.get(`${this.$store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories_exclude=${this.$store.state.featuredID}&page=${this.indexInfiniteLoading.page}&_embed`)
-        .then(response => {
-          this.$store.commit('setArticles', response.data)
+      this.$store.dispatch('fetchMoreArticles', { limit: 10, orderBy: 'date', exclude: this.$store.state.featuredID, page: this.indexInfiniteLoading.page })
+        .then(() => {
           this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
         })
         .catch(() => {
