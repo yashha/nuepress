@@ -57,13 +57,13 @@ export default {
   },
   async asyncData ({ app, store, params }) {
     if (!store.state.articles.length) {
-      const articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories_exclude=${store.state.featuredID}&_embed`)
-      store.commit('setArticles', articles.data)
+      const articles = await app.$wp.posts(10).embed().excludeCategories(store.state.featuredID)
+      store.commit('setArticles', articles)
     }
 
     if (!store.state.featuredArticles.length) {
-      const articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories=${store.state.featuredID}&_embed`)
-      store.commit('setFeaturedArticles', articles.data)
+      const articles = await app.$wp.posts(10).embed().categories(store.state.featuredID).embed()
+      store.commit('setFeaturedArticles', articles)
     }
   },
 

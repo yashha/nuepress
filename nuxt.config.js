@@ -1,4 +1,5 @@
 const webpack = require('webpack')
+const wpNuxtFeed = require('wp-nuxt/lib/rss')
 
 module.exports = {
   // Build configuration
@@ -42,7 +43,16 @@ module.exports = {
     '@nuxtjs/axios',
     ['@nuxtjs/google-analytics', {
       id: 'UA-93904346-3'
-    }]
+    }],
+    ['wp-nuxt']
+  ],
+  wp: {
+    endpoint: 'https://wp-api.kmr.io/wp-json'
+  },
+  feed: [
+    wpNuxtFeed({
+      endpoint: 'https://wp-api.kmr.io/wp-json'
+    })
   ],
 
   plugins: [

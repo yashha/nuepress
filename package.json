@@ -10,7 +10,8 @@
     "nuxt": "2.10.0",
     "vue-disqus": "^3.0.5",
     "vue-infinite-loading": "^2.4.4",
-    "vue-scrollto": "^2.17.1"
+    "vue-scrollto": "^2.17.1",
+    "wp-nuxt": "^1.0.18"
   },
   "config": {
     "nuxt": {
