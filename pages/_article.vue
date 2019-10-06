@@ -106,8 +106,8 @@ export default {
     }
   },
   async asyncData ({ app, store, params }) {
-    const article = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?slug=${params.article}&_embed`)
-    store.commit('setArticle', article.data[0])
+    const article = await app.$wp.posts(1).slug(params.article).embed()
+    store.commit('setArticle', article[0])
   },
 
   beforeMount () {
