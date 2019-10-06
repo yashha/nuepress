@@ -22,7 +22,7 @@ export default {
   },
   async asyncData ({ app, store, params }) {
     if (!store.state.topics) {
-      const topics = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/categories?per_page=100`)
+      const topics = await app.$wp.categories(100)
       store.commit('setTopics', topics.data)
     }
   },

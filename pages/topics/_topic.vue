@@ -65,19 +65,19 @@ export default {
   },
   async asyncData ({ app, store, params }) {
     if (!store.state.featuredArticles.length) {
-      const articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories=${store.state.featuredID}&_embed`)
-      store.commit('setFeaturedArticles', articles.data)
+      const articles = await app.$wp.posts(10).embed().categories(store.state.featuredID).embed()
+      store.commit('setFeaturedArticles', articles)
     }
 
     if (!store.state.topics) {
-      const topics = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/categories?per_page=100`)
-      store.commit('setTopics', topics.data)
+      const topics = await app.$wp.categories().perPage(100)
+      store.commit('setTopics', topics)
     }
 
     if (!find(store.state.topicArticles, { 'slug': params.topic })) {
       const topic = find(store.state.topics, { 'slug': params.topic })
-      const topicArticles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories=${topic.id}&_embed`)
-      store.commit('setTopicArticles', { slug: params.topic, articles: topicArticles.data, infiniteLoading: true, page: 1 })
+      const topicArticles = await app.$wp.posts(10).embed().categories(topic.id).embed()
+      store.commit('setTopicArticles', { slug: params.topic, articles: topicArticles, infiniteLoading: true, page: 1 })
     }
   },
 

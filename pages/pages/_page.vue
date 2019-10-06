@@ -71,8 +71,8 @@ export default {
     }
   },
   async asyncData ({ app, store, params }) {
-    const page = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/pages?slug=${params.page}&_embed`)
-    store.commit('setPage', page.data[0])
+    const page = await app.$wp.pages().slug(params.page).embed()
+    store.commit('setPage', page[0])
   },
 
   beforeMount () {

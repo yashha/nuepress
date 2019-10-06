@@ -15,8 +15,8 @@
 export default {
   async asyncData ({ app, store, params }) {
     if (!store.state.authors) {
-      const authors = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/users?per_page=100`)
-      store.commit('setAuthors', authors.data)
+      const authors = await app.$wp.users(100).embed()
+      store.commit('setAuthors', authors)
     }
   },
 

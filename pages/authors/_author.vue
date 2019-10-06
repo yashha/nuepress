@@ -65,13 +65,13 @@ export default {
   },
   async asyncData ({ app, store, params }) {
     if (!store.state.featuredArticles.length) {
-      const articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories=${store.state.featuredID}&_embed`)
-      store.commit('setFeaturedArticles', articles.data)
+      const articles = await app.$wp.posts(10).categories(store.state.featuredID).embed()
+      store.commit('setFeaturedArticles', articles)
     }
 
     if (!store.state.authors) {
-      const authors = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/users?per_page=100`)
-      store.commit('setAuthors', authors.data)
+      const authors = await app.$wp.users(100).embed()
+      store.commit('setAuthors', authors)
     }
 
     if (!find(store.state.authorArticles, { 'slug': params.author })) {
