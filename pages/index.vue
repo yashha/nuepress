@@ -77,17 +77,16 @@ export default {
   },
 
   methods: {
-    moreArticles () {
+    async moreArticles () {
       this.indexInfiniteLoading.page++
 
-      this.$axios.get(`${this.$store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories_exclude=${this.$store.state.featuredID}&page=${this.indexInfiniteLoading.page}&_embed`)
-        .then((response) => {
-          this.$store.commit('setArticles', response.data)
-          this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
-        })
-        .catch(() => {
-          this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
-        })
+      try {
+        const articles = await this.$wp.posts(10).excludeCategories(this.$store.state.featuredID).page(this.indexInfiniteLoading.page).embed()
+        this.$store.commit('setArticles', articles)
+        this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
+      } catch (e) {
+        this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
+      }
     }
   }
 }

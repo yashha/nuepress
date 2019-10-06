@@ -84,7 +84,6 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import axios from 'axios'
 import Spinner2 from '~/components/Spinner2'
 
 export default {
@@ -126,9 +125,9 @@ export default {
   },
 
   methods: {
-    debounceSearch: debounce(function (event) {
+    debounceSearch: debounce(async function (event) {
       if (event.keyCode !== 13 && event.keyCode !== 38 && event.keyCode !== 40) {
-        this.search()
+        await this.search()
       }
     }, 200),
 
@@ -147,16 +146,14 @@ export default {
       this.$refs.searchQuery.focus()
     },
 
-    search () {
+    async search () {
       this.spinnerVisible = true
 
-      axios.get(`${this.$store.state.wordpressAPI}/wp/v2/posts?search=${this.searchQuery}&_embed&per_page=8`)
-        .then((response) => {
-          this.apiResponse = true
-          this.spinnerVisible = false
-          this.articles = response.data
-          this.resultsVisible = true
-        })
+      const articles = await this.$wp.posts(8).search(this.searchQuery).embed()
+      this.apiResponse = true
+      this.spinnerVisible = false
+      this.articles = articles
+      this.resultsVisible = true
     },
 
     searchBlur () {

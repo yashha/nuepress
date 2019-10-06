@@ -76,8 +76,8 @@ export default {
 
     if (!find(store.state.authorArticles, { 'slug': params.author })) {
       const author = find(store.state.authors, { 'slug': params.author })
-      const authorArticles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&author=${author.id}&_embed`)
-      store.commit('setAuthorArticles', { slug: params.author, articles: authorArticles.data, infiniteLoading: true, page: 1 })
+      const authorArticles = await app.$wp.posts(10).author(author.id).embed()
+      store.commit('setAuthorArticles', { slug: params.author, articles: authorArticles, infiniteLoading: true, page: 1 })
     }
   },
 
@@ -91,17 +91,16 @@ export default {
   },
 
   methods: {
-    moreArticles () {
+    async moreArticles () {
       this.authorArticles.page++
 
-      this.$axios.get(`${this.$store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&author=${this.author.id}&_embed&page=${this.authorArticles.page}`)
-        .then((response) => {
-          this.authorArticles.articles = this.authorArticles.articles.concat(response.data)
-          this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
-        })
-        .catch(() => {
-          this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
-        })
+      try {
+        const articles = await this.$wp.posts(10).author(this.author.id).page(this.authorArticles.page).embed()
+        this.authorArticles.articles = this.authorArticles.articles.concat(articles)
+        this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
+      } catch (e) {
+        this.$refs.infiniteLoading.$emit('$InfiniteLoading:complete')
+      }
     }
   }
 }
