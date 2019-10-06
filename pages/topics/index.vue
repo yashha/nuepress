@@ -22,8 +22,8 @@ export default {
   },
   async asyncData ({ app, store, params }) {
     if (!store.state.topics) {
-      const topics = await app.$wp.categories(100)
-      store.commit('setTopics', topics.data)
+      const topics = await app.$wp.categories().param('per_page', 100)
+      store.commit('setTopics', topics)
     }
   },
 
