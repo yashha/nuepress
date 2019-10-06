@@ -1,10 +1,10 @@
 <template>
   <div class="page">
     <ul>
-      <li v-for="topic in $store.state.topics" v-if="topic.slug !== 'featured' && topic.count" :key="topic.id">
+      <li v-for="topic in filteredTopics" :key="topic.id">
         <nuxt-link :to="`/topics/${topic.slug}`">
-          <h2 v-html="topic.name"></h2>
-          <div v-html="topic.description"></div>
+          <h2 v-html="topic.name" />
+          <div v-html="topic.description" />
         </nuxt-link>
       </li>
     </ul>
@@ -13,9 +13,16 @@
 
 <script>
 export default {
+  computed: {
+    filteredTopics () {
+      return this.$store.state.topics.filter((topic) => {
+        return topic.slug !== 'featured' && topic.count
+      })
+    }
+  },
   async asyncData ({ app, store, params }) {
     if (!store.state.topics) {
-      let topics = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/categories?per_page=100`)
+      const topics = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/categories?per_page=100`)
       store.commit('setTopics', topics.data)
     }
   },

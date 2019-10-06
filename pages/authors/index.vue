@@ -3,8 +3,8 @@
     <ul>
       <li v-for="author in $store.state.authors" :key="author.id">
         <nuxt-link :to="`/authors/${author.slug}`">
-          <h2 v-html="author.name"></h2>
-          <div v-html="author.description"></div>
+          <h2 v-html="author.name" />
+          <div v-html="author.description" />
         </nuxt-link>
       </li>
     </ul>
@@ -15,7 +15,7 @@
 export default {
   async asyncData ({ app, store, params }) {
     if (!store.state.authors) {
-      let authors = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/users?per_page=100`)
+      const authors = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/users?per_page=100`)
       store.commit('setAuthors', authors.data)
     }
   },
@@ -97,4 +97,3 @@ export default {
   }
 }
 </style>
-

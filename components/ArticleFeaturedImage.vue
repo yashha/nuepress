@@ -8,13 +8,12 @@
       <div
         class="image-height"
         :style="{ paddingTop: featuredImageAspectRatio}"
-      ></div>
+      />
       <img v-lazy="featuredImage.source_url">
       <div
         class="featured-image-padding"
         :style="{ paddingTop: featuredImageAspectRatio}"
-      >
-      </div>
+      />
     </div>
   </div>
 </template>
@@ -22,8 +21,16 @@
 <script>
 export default {
   props: {
-    expanded: Boolean,
-    featuredImage: Object
+    expanded: {
+      type: Boolean,
+      default: false
+    },
+    featuredImage: {
+      type: Object,
+      default () {
+        return {}
+      }
+    }
   },
 
   computed: {

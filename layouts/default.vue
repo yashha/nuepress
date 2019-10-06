@@ -1,12 +1,12 @@
 <template>
-  <div class="blog" id="blog">
-    <Spinner1/>
+  <div id="blog" class="blog">
+    <Spinner1 />
     <div class="interface">
-      <TheHeader/>
+      <TheHeader />
       <main role="main">
-        <nuxt/>
+        <nuxt />
       </main>
-      <TheFooter/>
+      <TheFooter />
     </div>
   </div>
 </template>
@@ -153,7 +153,7 @@ a {
 
 .fancy {
   cursor: pointer;
-  
+
   &:hover {
     color: $accent;
   }

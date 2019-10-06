@@ -1,22 +1,30 @@
+<!-- eslint-disable vue/no-use-v-if-with-v-for -->
 <template>
   <aside>
     <div class="inner-container">
       <h1>Top Articles</h1>
       <article v-for="article in featuredArticles" :key="article.id">
-        <nuxt-link :to="`/${article.slug}`" v-if="article._embedded['wp:featuredmedia']" class="image">
-          <div class="featured lazy" v-if="featuredImage(article)">
-            <div class="image-height" :style="{ paddingTop: featuredImage(article).height / featuredImage(article).width * 100 + '%' }"></div>
+        <nuxt-link v-if="article._embedded['wp:featuredmedia']" :to="`/${article.slug}`" class="image">
+          <div v-if="featuredImage(article)" class="featured lazy">
+            <div class="image-height" :style="{ paddingTop: featuredImage(article).height / featuredImage(article).width * 100 + '%' }" />
             <img v-lazy="featuredImage(article).source_url">
-            <Spinner1/>
+            <Spinner1 />
           </div>
         </nuxt-link>
         <div class="content">
           <div class="meta">
-            <span v-html="shortTimestamp(article.date)"></span>&nbsp;–&nbsp;<nuxt-link class="topic fancy" v-for="topic in article._embedded['wp:term'][0]" :to="`/topics/${topic.slug}`" :key="topic.id" v-html="topic.name" v-if="topic.id !== $store.state.featuredID"></nuxt-link>
+            <span v-html="shortTimestamp(article.date)" />&nbsp;–&nbsp;<nuxt-link
+              v-for="topic in article._embedded['wp:term'][0]"
+              v-if="topic.id !== $store.state.featuredID"
+              :key="topic.id"
+              class="topic fancy"
+              :to="`/topics/${topic.slug}`"
+              v-html="topic.name"
+            />
           </div>
           <nuxt-link :to="`/${article.slug}`" class="article">
-            <h2 v-html="article.title.rendered"></h2>
-            <div class="excerpt" v-html="article.excerpt.rendered"></div>
+            <h2 v-html="article.title.rendered" />
+            <div class="excerpt" v-html="article.excerpt.rendered" />
           </nuxt-link>
         </div>
       </article>
@@ -31,15 +39,20 @@ export default {
   components: {
     Spinner1
   },
-  props: {
-    featuredArticles: Array
-  },
   mixins: {
     shortTimestamp: Function
   },
+  props: {
+    featuredArticles: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
+  },
   methods: {
     featuredImage (article) {
-      let featuredImage = article._embedded['wp:featuredmedia']
+      const featuredImage = article._embedded['wp:featuredmedia']
 
       if (featuredImage) {
         return featuredImage[0].media_details.sizes.medium || false

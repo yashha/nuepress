@@ -5,49 +5,38 @@
         v-if="heroArticle"
         :hero-article="heroArticle"
       />
-      <ArticleList :articles="$store.state.articles"/>
+      <ArticleList :articles="$store.state.articles" />
       <InfiniteLoading
         v-if="indexInfiniteLoading.enabled"
         ref="infiniteLoading"
         :on-infinite="moreArticles"
       >
         <span slot="spinner">
-          <Spinner1/>
+          <Spinner1 />
         </span>
         <span slot="no-results">
-          <Smile/>
+          <Smile />
           <div>No more articles!</div>
         </span>
         <span slot="no-more">
-          <Smile/>
+          <Smile />
           <div>No more articles!</div>
         </span>
       </InfiniteLoading>
     </div>
-    <TheSidebar :featured-articles="$store.state.featuredArticles"/>
+    <TheSidebar :featured-articles="$store.state.featuredArticles" />
   </div>
 </template>
 
 <script>
+import InfiniteLoading from 'vue-infinite-loading/src/components/InfiniteLoading.vue'
 import ArticleList from '~/components/ArticleList'
 import TheHero from '~/components/TheHero'
 import TheSidebar from '~/components/TheSidebar'
-import InfiniteLoading from 'vue-infinite-loading/src/components/InfiniteLoading.vue'
 import Smile from '~/assets/svg/Smile.vue'
 import Spinner1 from '~/components/Spinner1.vue'
 
 export default {
-  async asyncData ({ app, store, params }) {
-    if (!store.state.articles.length) {
-      let articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories_exclude=${store.state.featuredID}&_embed`)
-      store.commit('setArticles', articles.data)
-    }
-
-    if (!store.state.featuredArticles.length) {
-      let articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories=${store.state.featuredID}&_embed`)
-      store.commit('setFeaturedArticles', articles.data)
-    }
-  },
 
   components: {
     ArticleList,
@@ -66,6 +55,17 @@ export default {
       return this.$store.state.indexInfiniteLoading
     }
   },
+  async asyncData ({ app, store, params }) {
+    if (!store.state.articles.length) {
+      const articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories_exclude=${store.state.featuredID}&_embed`)
+      store.commit('setArticles', articles.data)
+    }
+
+    if (!store.state.featuredArticles.length) {
+      const articles = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories=${store.state.featuredID}&_embed`)
+      store.commit('setFeaturedArticles', articles.data)
+    }
+  },
 
   head () {
     return {
@@ -81,7 +81,7 @@ export default {
       this.indexInfiniteLoading.page++
 
       this.$axios.get(`${this.$store.state.wordpressAPI}/wp/v2/posts?orderby=date&per_page=10&categories_exclude=${this.$store.state.featuredID}&page=${this.indexInfiniteLoading.page}&_embed`)
-        .then(response => {
+        .then((response) => {
           this.$store.commit('setArticles', response.data)
           this.$refs.infiniteLoading.$emit('$InfiniteLoading:loaded')
         })

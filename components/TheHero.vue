@@ -1,24 +1,24 @@
 <template>
   <article class="hero">
-    <nuxt-link :to="`/${this.heroArticle.slug}`">
+    <nuxt-link :to="`/${heroArticle.slug}`">
       <div class="date">
-        <span v-html="shortTimestamp(heroArticle.date)"></span>
+        <span v-html="shortTimestamp(heroArticle.date)" />
         &nbsp;–&nbsp;
         <span
           v-for="topic in topics"
-          class="topic fancy"
           :key="topic.id"
+          class="topic fancy"
           v-html="topic.name"
-        ></span>
+        />
       </div>
       <div class="meta">
-        <h2 v-html="this.heroArticle.title.rendered"></h2>
-        <div v-html="this.heroArticle.excerpt.rendered"></div>
+        <h2 v-html="heroArticle.title.rendered" />
+        <div v-html="heroArticle.excerpt.rendered" />
       </div>
-      <div class="featured-image lazy" v-if="featuredImage">
-        <div class="image-height" :style="paddingTop"></div>
-        <div class="image" v-lazy:backgroundImage="featuredImage.source_url"></div>
-        <Spinner1/>
+      <div v-if="featuredImage" class="featured-image lazy">
+        <div class="image-height" :style="paddingTop" />
+        <div v-lazy:backgroundImage="featuredImage.source_url" class="image" />
+        <Spinner1 />
       </div>
     </nuxt-link>
   </article>
@@ -31,11 +31,16 @@ export default {
   components: {
     Spinner1
   },
-  props: {
-    heroArticle: Object
-  },
   mixins: {
     shortTimestamp: Function
+  },
+  props: {
+    heroArticle: {
+      type: Object,
+      default () {
+        return {}
+      }
+    }
   },
   computed: {
     paddingTop () {
@@ -47,11 +52,13 @@ export default {
       return this.heroArticle._embedded['wp:term'][0]
     },
     featuredImage () {
-      let featuredImage = this.heroArticle._embedded['wp:featuredmedia']
+      const featuredImage = this.heroArticle._embedded['wp:featuredmedia']
 
       if (featuredImage) {
         return featuredImage[0].media_details.sizes.large || featuredImage[0].media_details.sizes.full || false
       }
+
+      return ''
     }
   }
 }

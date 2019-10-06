@@ -7,25 +7,27 @@
     />
     <transition name="slide-fade">
       <div class="narrow" :class="{ 'expanded': expanded, 'no-featured-image': !featuredImage }">
-        <button class="expand-featured-image" title="Show full image" @click.prevent="expandFeaturedImage" :class="{ 'expanded': expanded }" v-if="featuredImage.source_url">
+        <button v-if="featuredImage.source_url" class="expand-featured-image" title="Show full image" :class="{ 'expanded': expanded }" @click.prevent="expandFeaturedImage">
           <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
-            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+            <path d="M0 0h24v24H0z" fill="none" />
           </svg>
         </button>
         <div class="meta">
-          <h1 class="title" v-html="article.title.rendered"></h1>
+          <h1 class="title" v-html="article.title.rendered" />
           <div class="details">
             <span>{{ longTimestamp(article.date) }}</span>
             <span class="separator">|</span>
-            <nuxt-link class="author fancy" :to="`/authors/${author.slug}`">{{ author.name }}</nuxt-link>
+            <nuxt-link class="author fancy" :to="`/authors/${author.slug}`">
+              {{ author.name }}
+            </nuxt-link>
           </div>
         </div>
-        <div class="content" id="article-content" v-html="article.content.rendered"></div>
-        <ArticleComments :article="article"/>
+        <div id="article-content" class="content" v-html="article.content.rendered" />
+        <ArticleComments :article="article" />
       </div>
     </transition>
-    <div v-html="linkRGB"></div>
+    <div v-html="linkRGB" />
   </article>
 </template>
 
@@ -41,48 +43,14 @@ if (process.browser) {
 }
 
 export default {
-  async asyncData ({ app, store, params }) {
-    let article = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?slug=${params.article}&_embed`)
-    store.commit('setArticle', article.data[0])
-  },
-
-  beforeMount () {
-    if (this.featuredImage.source_url) {
-      let img = this.article._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url
-
-      Vibrant.from(img).getPalette((err, palette) => {
-        if (!err) {
-          this.$store.commit('setFeaturedColor', palette)
-        }
-      })
-    }
-  },
-
-  mixins: {
-    longTimestamp: Function
-  },
 
   components: {
     ArticleFeaturedImage,
     ArticleComments
   },
 
-  computed: {
-    article () {
-      return this.$store.state.article
-    },
-    author () {
-      return this.$store.state.article._embedded.author[0]
-    },
-    featuredImage () {
-      let featuredImage = this.$store.state.article._embedded['wp:featuredmedia']
-
-      if (featuredImage) {
-        return featuredImage[0].media_details.sizes.large || featuredImage[0].media_details.sizes.full || false
-      } else {
-        return { height: 0, width: 0 }
-      }
-    }
+  mixins: {
+    longTimestamp: Function
   },
 
   data () {
@@ -93,51 +61,28 @@ export default {
     }
   },
 
-  head () {
-    return {
-      title: `${this.article.title.rendered} | ${this.$store.state.meta.name}`,
-      meta: [
-        { description: this.article.excerpt.rendered }
-      ]
-    }
-  },
+  computed: {
+    article () {
+      return this.$store.state.article
+    },
+    author () {
+      return this.$store.state.article._embedded.author[0]
+    },
+    featuredImage () {
+      const featuredImage = this.$store.state.article._embedded['wp:featuredmedia']
 
-  methods: {
-    expandFeaturedImage () {
-      if (!this.expanded) {
-        this.$router.push({ query: { image: null } })
+      if (featuredImage) {
+        return featuredImage[0].media_details.sizes.large || featuredImage[0].media_details.sizes.full || false
       } else {
-        this.$router.push({ query: null })
-      }
-      this.expanded = !this.expanded
-    },
-    loadFeaturedImageExpanded () {
-      if (this.$route.query.image === null) {
-        this.expanded = true
-      }
-    },
-    gallery () {
-      let galleries = document.querySelectorAll('.content > .gallery')
-
-      for (let i = 0; i < galleries.length; i++) {
-        // eslint-disable-next-line
-        lightGallery(galleries[i], {
-          download: false,
-          selector: 'a'
-        })
+        return { height: 0, width: 0 }
       }
     }
-  },
-
-  mounted () {
-    this.gallery()
-    this.loadFeaturedImageExpanded()
   },
 
   watch: {
     '$store.state.featuredColor' () {
-      let DarkMuted = this.$store.state.featuredColor.DarkMuted
-      let DarkVibrant = this.$store.state.featuredColor.DarkVibrant
+      const DarkMuted = this.$store.state.featuredColor.DarkMuted
+      const DarkVibrant = this.$store.state.featuredColor.DarkVibrant
 
       if (DarkMuted !== null && DarkVibrant !== null) {
         this.linkRGB = `
@@ -157,6 +102,63 @@ export default {
             }
           </style>
         `
+      }
+    }
+  },
+  async asyncData ({ app, store, params }) {
+    const article = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/posts?slug=${params.article}&_embed`)
+    store.commit('setArticle', article.data[0])
+  },
+
+  beforeMount () {
+    if (this.featuredImage.source_url) {
+      const img = this.article._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url
+
+      Vibrant.from(img).getPalette((err, palette) => {
+        if (!err) {
+          this.$store.commit('setFeaturedColor', palette)
+        }
+      })
+    }
+  },
+
+  head () {
+    return {
+      title: `${this.article.title.rendered} | ${this.$store.state.meta.name}`,
+      meta: [
+        { description: this.article.excerpt.rendered }
+      ]
+    }
+  },
+
+  mounted () {
+    this.gallery()
+    this.loadFeaturedImageExpanded()
+  },
+
+  methods: {
+    expandFeaturedImage () {
+      if (!this.expanded) {
+        this.$router.push({ query: { image: null } })
+      } else {
+        this.$router.push({ query: null })
+      }
+      this.expanded = !this.expanded
+    },
+    loadFeaturedImageExpanded () {
+      if (this.$route.query.image === null) {
+        this.expanded = true
+      }
+    },
+    gallery () {
+      const galleries = document.querySelectorAll('.content > .gallery')
+
+      for (let i = 0; i < galleries.length; i++) {
+        // eslint-disable-next-line
+        lightGallery(galleries[i], {
+          download: false,
+          selector: 'a'
+        })
       }
     }
   }

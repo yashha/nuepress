@@ -1,11 +1,11 @@
 <template>
   <div class="comments">
-    <div class="loading" v-if="!disqusReady">
-      <Spinner1/>
+    <div v-if="!disqusReady" class="loading">
+      <Spinner1 />
       <span>Loading comments</span>
     </div>
     <div class="disqus" :class="{ ready: disqusReady }">
-      <no-ssr>
+      <client-only>
         <lazy-component>
           <VueDisqus
             shortname="nuepress-kmr-io"
@@ -13,22 +13,27 @@
             @ready="disqusReady = true"
           />
         </lazy-component>
-      </no-ssr>
+      </client-only>
     </div>
   </div>
 </template>
 
 <script>
+import VueDisqus from 'vue-disqus/dist/vue-disqus.vue'
 import Spinner1 from '~/components/Spinner1'
-import VueDisqus from 'vue-disqus/VueDisqus.vue'
 
 export default {
-  props: {
-    article: Object
-  },
   components: {
     Spinner1,
     VueDisqus
+  },
+  props: {
+    article: {
+      type: Object,
+      default () {
+        return {}
+      }
+    }
   },
   data () {
     return {

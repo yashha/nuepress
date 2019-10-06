@@ -7,21 +7,23 @@
     />
     <transition name="slide-fade">
       <div class="narrow" :class="{ 'expanded': expanded, 'no-featured-image': !featuredImage }">
-        <button class="expand-featured-image" title="Show full image" @click.prevent="expanded = !expanded" :class="{ 'expanded': expanded }" v-if="featuredImage.source_url">
+        <button v-if="featuredImage.source_url" class="expand-featured-image" title="Show full image" :class="{ 'expanded': expanded }" @click.prevent="expanded = !expanded">
           <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
-            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+            <path d="M0 0h24v24H0z" fill="none" />
           </svg>
         </button>
         <div class="meta">
-          <h1 class="title" v-html="page.title.rendered"></h1>
+          <h1 class="title" v-html="page.title.rendered" />
           <div class="details">
             <span>{{ longTimestamp(page.date) }}</span>
             <span class="separator">|</span>
-            <nuxt-link class="author fancy" :to="`/authors/${author.slug}`">{{ author.name }}</nuxt-link>
+            <nuxt-link class="author fancy" :to="`/authors/${author.slug}`">
+              {{ author.name }}
+            </nuxt-link>
           </div>
         </div>
-        <div class="content" id="article-content" v-html="page.content.rendered"></div>
+        <div id="article-content" class="content" v-html="page.content.rendered" />
       </div>
     </transition>
   </article>
@@ -38,25 +40,15 @@ if (process.browser) {
 }
 
 export default {
-  async asyncData ({ app, store, params }) {
-    let page = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/pages?slug=${params.page}&_embed`)
-    store.commit('setPage', page.data[0])
-  },
-
-  beforeMount () {
-    if (this.featuredImage.source_url) {
-      let img = this.page._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url
-
-      Vibrant.from(img).getPalette((err, palette) => {
-        if (!err) {
-          this.$store.commit('setFeaturedColor', palette)
-        }
-      })
-    }
-  },
 
   components: {
     ArticleFeaturedImage
+  },
+
+  data () {
+    return {
+      expanded: false
+    }
   },
 
   computed: {
@@ -78,10 +70,20 @@ export default {
       }
     }
   },
+  async asyncData ({ app, store, params }) {
+    const page = await app.$axios.get(`${store.state.wordpressAPI}/wp/v2/pages?slug=${params.page}&_embed`)
+    store.commit('setPage', page.data[0])
+  },
 
-  data () {
-    return {
-      expanded: false
+  beforeMount () {
+    if (this.featuredImage.source_url) {
+      const img = this.page._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url
+
+      Vibrant.from(img).getPalette((err, palette) => {
+        if (!err) {
+          this.$store.commit('setFeaturedColor', palette)
+        }
+      })
     }
   },
 
@@ -94,9 +96,13 @@ export default {
     }
   },
 
+  mounted () {
+    this.gallery()
+  },
+
   methods: {
     gallery () {
-      let galleries = document.querySelectorAll('.content > .gallery')
+      const galleries = document.querySelectorAll('.content > .gallery')
 
       for (let i = 0; i < galleries.length; i++) {
         // eslint-disable-next-line
@@ -106,10 +112,6 @@ export default {
         })
       }
     }
-  },
-
-  mounted () {
-    this.gallery()
   }
 }
 </script>
@@ -196,7 +198,6 @@ article {
       margin: 0 auto;
     }
   }
-
 
   .meta {
     .title {

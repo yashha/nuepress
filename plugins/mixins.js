@@ -11,8 +11,8 @@ Vue.mixin({
      * @return {String} formatted date
      */
     shortTimestamp (date) {
-      let article = moment(date)
-      let today = moment(new Date())
+      const article = moment(date)
+      const today = moment(new Date())
 
       if (today.diff(article) > 518400000) {
         return article.format('MMM D')

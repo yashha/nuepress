@@ -1,7 +1,7 @@
 <template>
   <div class="spinner">
-    <div class="double-bounce1"></div>
-    <div class="double-bounce2"></div>
+    <div class="double-bounce1" />
+    <div class="double-bounce2" />
   </div>
 </template>
 
@@ -35,9 +35,9 @@
 }
 
 @keyframes sk-bounce {
-  0%, 100% { 
+  0%, 100% {
     transform: scale(0.0);
-  } 50% { 
+  } 50% {
     transform: scale(1.0);
   }
 }

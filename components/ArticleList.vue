@@ -1,27 +1,28 @@
+<!--suppress CheckEmptyScriptTag -->
 <template>
   <div class="article-list">
     <article v-for="article in articles" :key="article.id">
       <div class="date">
-        <span v-html="shortTimestamp(article.date)"></span>
+        <span v-html="shortTimestamp(article.date)" />
         &nbsp;–&nbsp;
         <span class="topics">
-          <nuxt-link class="topic fancy" v-for="topic in article._embedded['wp:term'][0]" :to="`/topics/${topic.slug}`" :key="topic.id" v-html="topic.name"></nuxt-link>
+          <nuxt-link v-for="topic in article._embedded['wp:term'][0]" :key="topic.id" class="topic fancy" :to="`/topics/${topic.slug}`" v-html="topic.name" />
         </span>
       </div>
       <nuxt-link :to="`/${article.slug}`" class="row">
         <div class="col">
-          <div class="lazy thumbnail" v-if="article._embedded['wp:featuredmedia']">
+          <div v-if="article._embedded['wp:featuredmedia']" class="lazy thumbnail">
             <img v-lazy="article._embedded['wp:featuredmedia'][0].media_details.sizes.thumbnail.source_url">
-            <Spinner1 class="spinner"/>
+            <Spinner1 class="spinner" />
           </div>
-          <div class="lazy medium" v-if="article._embedded['wp:featuredmedia']">
+          <div v-if="article._embedded['wp:featuredmedia']" class="lazy medium">
             <img v-lazy="article._embedded['wp:featuredmedia'][0].media_details.sizes.medium.source_url">
-            <Spinner1 class="spinner"/>
+            <Spinner1 class="spinner" />
           </div>
         </div>
         <div class="col">
-          <h2 v-html="article.title.rendered"></h2>
-          <div class="excerpt" v-html="article.excerpt.rendered"></div>
+          <h2 v-html="article.title.rendered" />
+          <div class="excerpt" v-html="article.excerpt.rendered" />
         </div>
       </nuxt-link>
     </article>
@@ -35,11 +36,16 @@ export default {
   components: {
     Spinner1
   },
-  props: {
-    articles: Array
-  },
   mixins: {
     shortTimestamp: Function
+  },
+  props: {
+    articles: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
   }
 }
 </script>

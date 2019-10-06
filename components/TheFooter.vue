@@ -2,9 +2,9 @@
   <footer>
     <div>
       <span class="fancy link" to="/" @click.prevent="homeScrollTop">
-        <span v-html="meta.name"></span>
+        <span v-html="meta.name" />
       </span>
-      <div v-if="meta.description" v-html="meta.description"></div>
+      <div v-if="meta.description" v-html="meta.description" />
       <div>© {{ year }}</div>
     </div>
   </footer>
@@ -12,6 +12,10 @@
 
 <script>
 export default {
+
+  mixins: {
+    homeScrollTop: Function
+  },
   computed: {
     meta () {
       return this.$store.state.meta
@@ -19,10 +23,6 @@ export default {
     year () {
       return new Date().getFullYear()
     }
-  },
-
-  mixins: {
-    homeScrollTop: Function
   }
 }
 </script>

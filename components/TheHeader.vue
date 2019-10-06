@@ -2,15 +2,23 @@
   <header>
     <div>
       <span class="blog-title" to="/" @click.prevent="homeScrollTop">
-        <h1 v-html="meta.name"></h1>
+        <h1 v-html="meta.name" />
       </span>
       <nav>
-        <nuxt-link to="/" exact>Latest Articles</nuxt-link>
-        <nuxt-link to="/topics">Topics</nuxt-link>
-        <nuxt-link to="/authors">Authors</nuxt-link>
-        <nuxt-link to="/pages/sample-page">Sample Page</nuxt-link>
+        <nuxt-link to="/" exact>
+          Latest Articles
+        </nuxt-link>
+        <nuxt-link to="/topics">
+          Topics
+        </nuxt-link>
+        <nuxt-link to="/authors">
+          Authors
+        </nuxt-link>
+        <nuxt-link to="/pages/sample-page">
+          Sample Page
+        </nuxt-link>
       </nav>
-      <TheHeaderSearch/>
+      <TheHeaderSearch />
     </div>
   </header>
 </template>
@@ -23,14 +31,14 @@ export default {
     TheHeaderSearch
   },
 
+  mixins: {
+    homeScrollTop: Function
+  },
+
   computed: {
     meta () {
       return this.$store.state.meta
     }
-  },
-
-  mixins: {
-    homeScrollTop: Function
   }
 }
 </script>

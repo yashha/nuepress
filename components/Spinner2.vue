@@ -1,8 +1,8 @@
 <template>
   <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
+    <div class="bounce1" />
+    <div class="bounce2" />
+    <div class="bounce3" />
   </div>
 </template>
 
@@ -36,9 +36,9 @@
 }
 
 @keyframes sk-bouncedelay {
-  0%, 80%, 100% { 
+  0%, 80%, 100% {
     transform: scale(0);
-  } 40% { 
+  } 40% {
     transform: scale(1.0);
   }
 }

@@ -1,16 +1,13 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
-  env: {
-    browser: true,
-    node: true
+  parserOptions: {
+    parser: "babel-eslint",
+    sourceType: "module"
   },
-  extends: 'standard',
-  // required to lint *.vue files
-  plugins: [
-    'html'
+  extends: [
+    "@nuxtjs"
   ],
-  // add your custom rules here
-  rules: {},
-  globals: {}
+  rules: {
+    'vue/no-v-html': 0
+  }
 }
